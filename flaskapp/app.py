@@ -8,7 +8,7 @@ def index():
 
 @app.route('/data')
 def data():
-    return jsonify({'stats': [45, 62, 71]}), 200
+    return jsonify({'stats': [111, 999, 444]}), 200
 
 @app.route('/health')
 def health():

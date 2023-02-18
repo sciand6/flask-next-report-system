@@ -214,4 +214,7 @@ gcloud builds submit --project=frrs-378218 --config cloudbuild.yaml
 
 The app should be deployed and available at http://LoadBalancerIP:8080.
 
-## TODO: Add deploying changes to GCP tutorial
+# Deploying Changes
+Delete all the items in Container Registry<br>
+Delete all the items in Workloads<br>
+Perform steps 15 and 16<br>
