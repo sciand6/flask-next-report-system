@@ -216,5 +216,6 @@ The app should be deployed and available at http://LoadBalancerIP:8080.
 
 # Deploying Changes
 Delete all the items in Container Registry<br>
+Delete all the items in Docker Desktop<br>
 Delete all the items in Workloads<br>
 Perform steps 15 and 16<br>
