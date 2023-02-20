@@ -15,3 +15,6 @@ local machine.
 # Check Kubernetes Logs
 kubectl get deployment flask
 kubectl describe pod <pod-name>
+
+# Exclude Flask-Cors from requirements.txt
+pip freeze | findstr /V Flask-Cors > requirements.txt

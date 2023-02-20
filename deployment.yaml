@@ -21,6 +21,9 @@ spec:
               cpu: "1000m"
             requests:
               cpu: "400m"
+          env:
+            - name: FLASK_ENV
+              value: production
           livenessProbe:
             httpGet:
               path: /health
@@ -61,6 +64,9 @@ spec:
               cpu: "1000m"
             requests:
               cpu: "400m"
+          env:
+            - name: NODE_ENV
+              value: production
           livenessProbe:
             httpGet:
               path: /health

@@ -5,9 +5,14 @@ import ReportTable from '@/components/ReportTable'
 
 export default function Home() {
   const [report, setreport] = useState({})
+  const [baseUrl, setbaseUrl] = useState(
+    process.env.NODE_ENV === 'production'
+      ? 'http://34.86.206.228:8080/api'
+      : 'http://localhost:8000',
+  )
 
   useEffect(() => {
-    fetch('http://34.86.206.228:8080/api/data', {
+    fetch(`${baseUrl}/data`, {
       method: 'GET',
       mode: 'cors',
     })

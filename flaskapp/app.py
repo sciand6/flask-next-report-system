@@ -1,9 +1,8 @@
 from flask import Flask, jsonify
-from flask_cors import CORS
-
 from nba_api.stats.endpoints import leaguedashteamstats
 import json
 import pandas as pd
+import os
 
 def df_to_json(df):
     columns = df.columns.to_list()
@@ -15,7 +14,9 @@ def df_to_json(df):
 
 app = Flask(__name__)
 
-CORS(app)
+if os.environ.get('FLASK_ENV') != 'production':
+    from flask_cors import CORS
+    CORS(app)
 
 @app.route('/')
 def index():
