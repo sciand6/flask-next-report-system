@@ -1,10 +1,12 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useTable, useSortBy } from 'react-table'
 import styles from '@/styles/Home.module.css'
 
 function ReportTable({ report }) {
   const columns = useMemo(() => report.columns, [])
   const data = useMemo(() => report.data, [])
+  const [selectedTeams, setSelectedTeams] = useState([])
+
   const tableInstance = useTable(
     {
       columns,
@@ -19,35 +21,80 @@ function ReportTable({ report }) {
     rows,
     prepareRow,
   } = tableInstance
+
+  const handleTeamSelect = (event, teamName) => {
+    if (event.target.checked) {
+      setSelectedTeams([...selectedTeams, teamName])
+    } else {
+      setSelectedTeams(selectedTeams.filter((team) => team !== teamName))
+    }
+  }
+
+  const teamNames = Array.from(new Set(data.map((d) => d.TEAM_NAME)))
+
   return (
-    <table className={styles.redTable} {...getTableProps()}>
-      <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                {column.render('Header')}
-                <span>
-                  {column.isSorted ? (column.isSortedDesc ? 'v' : '^') : ''}
-                </span>
-              </th>
-            ))}
-          </tr>
+    <div className={styles.container}>
+      <div className={styles.checkboxes}>
+        <label className={styles.checkbox}>
+          <input
+            type="checkbox"
+            checked={selectedTeams.length === teamNames.length}
+            onChange={() =>
+              setSelectedTeams(
+                selectedTeams.length === teamNames.length ? [] : teamNames,
+              )
+            }
+          />
+          <span className={styles.checkmark}></span>
+          Select All
+        </label>
+        {teamNames.map((teamName) => (
+          <label className={styles.checkbox} key={teamName}>
+            <input
+              type="checkbox"
+              checked={selectedTeams.includes(teamName)}
+              onChange={(event) => handleTeamSelect(event, teamName)}
+            />
+            <span className={styles.checkmark}></span>
+            {teamName}
+          </label>
         ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row)
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => (
-                <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+      </div>
+      <table className={styles.redTable} {...getTableProps()}>
+        <thead>
+          {headerGroups.map((headerGroup) => (
+            <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column) => (
+                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  {column.render('Header')}
+                  <span>
+                    {column.isSorted ? (column.isSortedDesc ? 'v' : '^') : ''}
+                  </span>
+                </th>
               ))}
             </tr>
-          )
-        })}
-      </tbody>
-    </table>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {rows
+            .filter((row) =>
+              selectedTeams.length === 0
+                ? true
+                : selectedTeams.includes(row.original.TEAM_NAME),
+            )
+            .map((row) => {
+              prepareRow(row)
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map((cell) => (
+                    <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                  ))}
+                </tr>
+              )
+            })}
+        </tbody>
+      </table>
+    </div>
   )
 }
 
