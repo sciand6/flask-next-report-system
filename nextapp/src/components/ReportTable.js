@@ -5,7 +5,9 @@ import styles from '@/styles/Home.module.css'
 function ReportTable({ report }) {
   const columns = useMemo(() => report.columns, [])
   const data = useMemo(() => report.data, [])
-  const [selectedTeams, setSelectedTeams] = useState([])
+  const [selectedTeams, setSelectedTeams] = useState(
+    report.data.map((d) => d.TEAM_NAME),
+  )
 
   const tableInstance = useTable(
     {
@@ -79,7 +81,7 @@ function ReportTable({ report }) {
           {rows
             .filter((row) =>
               selectedTeams.length === 0
-                ? true
+                ? false
                 : selectedTeams.includes(row.original.TEAM_NAME),
             )
             .map((row) => {
