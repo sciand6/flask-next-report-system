@@ -1,5 +1,5 @@
-from flask import Flask, jsonify
-from nbapy import league
+from flask import Flask, jsonify, request
+from nbapy import league, constants
 import json
 import pandas as pd
 import os
@@ -25,9 +25,19 @@ def index():
 
 @app.route('/data')
 def data():
+    last_n_games = request.args.get('lastNGames')
+
+    # Check if last_n_games is a valid integer between 1 and 10
+    try:
+        last_n_games = int(last_n_games)
+        if last_n_games < 1 or last_n_games > 10:
+            last_n_games = constants.LastNGames.Default
+    except (TypeError, ValueError):
+        last_n_games = constants.LastNGames.Default
+
     cols = ['TEAM_NAME', 'W_PCT', 'P_EXP', 'PTS', 'OPP_PTS', 'AST', 'REB', 'PTS_RANK', 'OPP_PTS_RANK', 'AST_RANK', 'REB_RANK']
-    team_df = league.TeamStats(per_mode='PerGame').stats()
-    opp_df = league.TeamStats(measure_type='Opponent', per_mode='PerGame').stats()
+    team_df = league.TeamStats(per_mode='PerGame', last_n_games=last_n_games).stats()
+    opp_df = league.TeamStats(measure_type='Opponent', per_mode='PerGame', last_n_games=last_n_games).stats()
     df = pd.merge(team_df, opp_df, on='TEAM_ID')
     df = df.filter(regex='^(?!.*_y)', axis=1)
     df = df.rename(columns=lambda x: x.replace('_x', ''))

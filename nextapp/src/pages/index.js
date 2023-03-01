@@ -10,16 +10,24 @@ export default function Home() {
       ? 'http://34.86.206.228:8080/api'
       : 'http://localhost:8000',
   )
+  const gameOptions = Array.from({ length: 10 }, (_, i) => (
+    <option key={i + 1} value={i + 1}>
+      Last {i + 1}
+    </option>
+  ))
+  const [lastNGames, setlastNGames] = useState('')
 
-  useEffect(() => {
-    fetch(`${baseUrl}/data`, {
+  const fetchData = () => {
+    fetch(`${baseUrl}/data?lastNGames=${lastNGames}`, {
       method: 'GET',
       mode: 'cors',
     })
       .then((res) => res.json())
       .then((data) => setreport(data))
       .catch((err) => console.log(err))
-  }, [])
+  }
+
+  useEffect(fetchData, [lastNGames])
 
   return (
     <>
@@ -31,6 +39,19 @@ export default function Home() {
       </Head>
       <main>
         <h2 className={styles.header}>NBA Team Report</h2>
+        <div>
+          <label htmlFor="games">Games:</label>
+          <select
+            id="games"
+            name="games"
+            onChange={(e) => setlastNGames(e.target.value)}
+          >
+            <option key="All" value="">
+              All
+            </option>
+            {gameOptions}
+          </select>
+        </div>
         {report.data ? <ReportTable report={report} /> : 'No data'}
       </main>
     </>
