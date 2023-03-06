@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { useTable, useSortBy } from 'react-table'
 import styles from '@/styles/Home.module.css'
+import CheckBoxes from './CheckBoxes'
 
 function ReportTable({ report }) {
   const columns = useMemo(() => report.columns, [report])
@@ -36,32 +37,12 @@ function ReportTable({ report }) {
 
   return (
     <>
-      <div className={styles.checkboxes}>
-        <label className={styles.checkbox}>
-          <input
-            type="checkbox"
-            checked={selectedTeams.length === teamNames.length}
-            onChange={() =>
-              setSelectedTeams(
-                selectedTeams.length === teamNames.length ? [] : teamNames,
-              )
-            }
-          />
-          <span className={styles.checkmark}></span>
-          Select All
-        </label>
-        {teamNames.map((teamName) => (
-          <label className={styles.checkbox} key={teamName}>
-            <input
-              type="checkbox"
-              checked={selectedTeams.includes(teamName)}
-              onChange={(event) => handleTeamSelect(event, teamName)}
-            />
-            <span className={styles.checkmark}></span>
-            {teamName}
-          </label>
-        ))}
-      </div>
+      <CheckBoxes
+        options={teamNames}
+        selectedOptions={selectedTeams}
+        handleSelectAll={setSelectedTeams}
+        handleOptionSelect={handleTeamSelect}
+      />
       <div className={styles.container}>
         <table className={styles.redTable} {...getTableProps()}>
           <thead>

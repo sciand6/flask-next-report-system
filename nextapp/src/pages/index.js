@@ -2,6 +2,7 @@ import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
 import { useEffect, useState } from 'react'
 import ReportTable from '@/components/ReportTable'
+import Select from '@/components/Select'
 
 export default function Home() {
   const [report, setreport] = useState({})
@@ -39,19 +40,12 @@ export default function Home() {
       </Head>
       <main>
         <h2 className={styles.header}>NBA Team Report</h2>
-        <div>
-          <label htmlFor="games">Games:</label>
-          <select
-            id="games"
-            name="games"
-            onChange={(e) => setlastNGames(e.target.value)}
-          >
-            <option key="All" value="">
-              All
-            </option>
-            {gameOptions}
-          </select>
-        </div>
+        <Select
+          id="games"
+          label="Games"
+          options={gameOptions}
+          onChange={(e) => setlastNGames(e.target.value)}
+        />
         {report.data ? <ReportTable report={report} /> : 'No data'}
       </main>
     </>
